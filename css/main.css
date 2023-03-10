@@ -1,0 +1,261 @@
+body { margin: 0; }
+
+
+            table, td {
+                border: 0.6px solid black;
+                margin-right: 5px;
+            }
+            #btn1, #btn2, #btn3, #btn4, #btn5, #btn5i, #btn6, #btn7, #btn8, #btn9, #btn9i, #btn10 {
+                width: 100px;
+                height: 30px;
+                position: absolute;
+                float: right;
+                z-index: 100;
+                display:block;
+                cursor: pointer;
+            }
+
+
+
+            #btn1 { 
+                top: 110px;
+                left: 1239px;
+                background-color:   rgb(7, 151, 91);
+                color: rgb(12, 12, 12);
+                border-radius: 9px;
+                
+            }
+
+            #btn2 {
+                top: 155px;
+                left: 1239px;
+                background-color:rgb(255, 0, 55);
+                color: rgb(12, 12, 12);
+                border-radius: 9px;
+
+            }
+
+            /* #btn3 {
+                top: 17px;
+                left: 1222px;
+                background-color:rgb(255, 251, 0);
+                color: rgb(12, 12, 12);
+                width: 116px;
+                border-radius: 9px;
+            } */
+
+            #btn4 {
+                top: 120px;
+                left: 1150px;
+                background-color: #FDF5E6;
+                color: rgb(12, 12, 12);
+                width: 188px;
+                height: 35px;
+                border-radius: 9px;
+
+            }
+
+            #btn5 {
+                top: 180px;
+                left: 1150px;
+                background-color: #FDF5E6;
+                color: rgb(12, 12, 12);
+                width: 188px;
+                height: 46px;
+                border-radius: 9px;
+
+            }
+
+            #btn5i {
+                top: 245px;
+                left: 1150px;
+                background-color:  #90EE90#B0E0E6;
+                color: rgb(12, 12, 12);
+                width: 188px;
+                height: 35px;
+                border-radius: 9px;
+
+            }
+
+            #btn6 {
+                top: 296px;
+                left: 1150px;
+                background-color: #90EE90;
+                color:black;
+                width: 188px;
+                height: 35px;
+                border-radius: 9px;
+
+            }
+
+            #btn7 {
+                top: 350px;
+                left: 1150px;
+                background-color: #90EE90#B0E0E6;
+                color:black;
+                width: 188px;
+                height: 35px;
+                border-radius: 9px;
+
+            }
+
+            #btn8 {
+                top: 120px;
+                left: 904px;
+                background-color: rgb(97, 0, 189);
+                color:white;
+                width: 160px;
+                height: 35px;
+                border-radius: 5px;
+                border: 1px solid rgb(255, 255, 255);
+
+            }
+
+            #btn9 {
+                top: 180px;
+                left: 904px;
+                background-color: rgb(255, 0, 0);
+                color:rgb(255, 255, 255);
+                width: 130px;
+                height: 35px;
+                border-radius: 5px;
+                border: 1px solid white;
+
+            }
+
+            #btn9i {
+                top: 230px;
+                left: 904px;
+                background-color: rgb(255, 38, 0);
+                color:rgb(255, 255, 255);
+                width: 130px;
+                height: 35px;
+                border-radius: 5px;
+                border: 1px solid white;
+
+            }
+
+            #btn10 {
+                top: 280px;
+                left: 904px;
+                background-color: rgb(252, 252, 252);
+                color:black;
+                width: 197px;
+                height: 35px;
+                border-radius: 5px;
+                border: 1px solid white;
+
+            }
+
+            #time {
+                position: absolute;
+                float: right;
+                font-size: 28px;
+                z-index: 100;
+                display:block;
+                color: rgb(255, 255, 255);
+                font-style: bold;
+                cursor: pointer;
+                top: 472px;
+                left: 1052px;
+            }
+
+            #note {
+                position: absolute;
+                float: right;
+                font-size: 28px;
+                z-index: 100;
+                display:block;
+                color: white;
+                font-style: bold;
+                cursor: pointer;
+                top: 510px;
+                left: 990px;
+            }
+
+            #note2 {
+                position: absolute;
+                float: right;
+                font-size: 28px;
+                z-index: 100;
+                display:block;
+                color: white;
+                font-style: bold;
+                cursor: pointer;
+                top: 530px;
+                left: 1000px;
+            }
+
+            /* #altitude {
+                margin-top: 230px;
+                font-size: 30px;
+                color:red;
+                margin-left: 242px; 
+                line-height: 0px; 
+            }
+
+            #speed_of_orbit {
+                margin-top: 230px;
+                font-size: 30px;
+                color:red;
+                margin-left: 180px; 
+            }
+
+            #speed_of_rotation {
+                margin-top: 230px;
+                font-size: 30px;
+                color:red;
+                margin-left: 242px; 
+            } */
+
+            #databoard {
+                width: 880px;
+                height: 60px;
+                position: absolute;
+                float: center;
+                z-index: 100;
+                display:block;
+                border-radius: 18px;
+                top: 642px;
+                line-height:0px;
+                opacity: 10;
+                letter-spacing: 0px;
+                left: 280px;
+                background-color:transparent;
+            }
+             #databoard p {
+                 padding-left: 10px;
+             }
+
+             #controls {
+                width: 507px;
+                height: 560px;
+                position: absolute;
+                float: right;
+                z-index: 100;
+                display:block;
+                border-radius: 18px;
+                top:30px;
+                line-height:0px;
+                letter-spacing: 0px;
+                left: 856px;
+                background-color: transparent;
+            }
+
+            #overlay {
+
+                margin-top:26px;
+                height:510px;
+                background-color:indigo;
+                opacity: 0.6;
+                border:1px solid indigo;
+                border-radius: 15px;
+            }
+
+            #desc {
+                z-index: 100;
+                font-family: 'Source Sans Pro', sans-serif;
+            }
+			canvas { width: 100%; height: 100%  }
+
+            #info { position: absolute; top: 10px; width: 100%; text-align: center;	z-index: 100; display:block; color: rgb(223, 219, 219); }

@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+        <title>London - Monte-Carlo Satellite Simulation Application</title>
+		<!--===============================================================================================-->	 
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+        <!--===============================================================================================-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!--===============================================================================================-->
+        <link rel="icon" type="image/png" href="csw/images/icons/favicon.ico"/>
+
+    </head>
+    
+
+	<body>
+
+    
+
+   <center> 
+    <button id="btnOpenControls" style="margin-bottom:19px;margin-top:8px;float:center;position: relative;">Open Controls</button> 
+    <button id="btnCloseControls" style="margin-bottom:19px;margin-top:8px;float:center;position: relative;">Close Controls</button> 
+   </center>
+
+   <script>
+      document.getElementById("btnCloseControls").addEventListener("click", function() {
+          document.getElementById("controls").style.visibility='hidden';
+          document.getElementById("ctr").style.visibility='hidden';
+          
+      });
+
+      document.getElementById("btnOpenControls").addEventListener("click", function() {
+          document.getElementById("controls").style.visibility='visible';
+          document.getElementById("ctr").style.visibility='visible';
+          
+      });
+   </script>
+
+        <script src="js/three.js"></script>
+        <script src="js/packets.js"></script>
+        <script src="js/values.js"></script>
+        <script src="js/rotation.js"></script>
+        <script src="js/orbit.js"></script>
+        <script src="js/packets.js"></script>
+        <script src="js/sat.js"></script>
+        <script src= "js/connection.js"></script>
+        <script src= "js/newSatLoc.js"></script>          
+
+
+<div id="openModal2" class="modalDialog" >
+    
+    
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+    <style>
+
+.modalDialog {
+	position: fixed;
+	font-family: Arial, Helvetica, sans-serif;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.8);
+	z-index: 99999;
+	opacity:0;
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+	pointer-events: none;
+}
+.modalDialog:target {
+	opacity:1;
+	pointer-events: auto;
+}
+.modalDialog > div {
+	width: 60%;
+	position: relative;
+	margin: 10% auto;
+	padding: 5px 20px 13px 20px;
+	border-radius: 10px;
+	background: #fff;
+	background: -moz-linear-gradient(#fff, #efebeb);
+	background: -webkit-linear-gradient(#fff, #efebeb);
+	background: -o-linear-gradient(#fff, #efebeb);
+}
+.close {
+	background: #606061;
+	color: #FFFFFF;
+	line-height: 25px;
+	position: absolute;
+	right: -12px;
+	text-align: center;
+	top: -10px;
+	width: 24px;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	-moz-box-shadow: 1px 1px 3px #000;
+	-webkit-box-shadow: 1px 1px 3px #000;
+	box-shadow: 1px 1px 3px #000;
+}
+
+.close:hover { background: #00d9ff; }
+</style>
+	<div style="height:650px; margin-top: 10px !important; overflow-y: scroll">
+		
+    
+    <center><h2>Simulation Parameters </h2></center>
+    <!-- <span style='float:right;'><a id="closelog2" href="#close" class="btn btn-danger" >X Close</a> </span> -->
+        <script>
+          document.getElementById("closelog2").addEventListener("click", function() {
+           window.alert('Satellite No:'+satelliteNoParam+" Altitude: "+altitudeParam);
+        //window.alert('Closed');
+        });
+        
+        
+        
+        
+        </script>
+        <br/>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+</style>
+<h4>Imagine the British Secret Intelligence Service (MI6) needed a Private Internet to communicate
+   with its agents in classified locations around the globe. What satellite configuration will best support the MI6 and its
+  agents around the globe?</h4>
+<h5>We iterate "Random Messages" coming out of London at "Random Intervals" to "Random Locations" to track:-</h5>
+<h5>(i) Total Messages Delivered.<br/>
+   (ii) Total Messages Delivered 'instantaneously' [without delay}.<br/>
+   (iii) Total Messages Delivered 'belatedly' [with delay}.<br/>
+   (iv) Average Delay time of belated messages.<br/>
+   <br/>
+
+   of Different Satellites (1U, 1.5U, 2U, 3U, 6U, 12U) at Different Altitudes (200 miles, 400 miles, 600 miles, 800 miles, 1000 miles, 1200 miles) 
+   at Polar Orbits
+    </h5>
+  <br/>
+<h4>Enter simulation parameters in the form to begin</h4>
+ <br/>
+<div class="form-group">
+  <label for="1">Size of Cubesat Satellite</label>
+  <select id="1" name="Size_of_Satellite" class="form-control">
+    <option value="1U">1U</option>
+    <option value="2U">1.5U</option>
+    <option value="3U">2U</option>
+    <option value="4U">3U</option>
+    <option value="5U">6U</option>
+    <option value="6U">12U</option>
+  </select>
+</div>
+<div class="form-group">
+  <label for="2">Altitude of Satellite</label>
+  <select id="2" name="Altitude_of_Satellite" class="form-control">
+    <option value="2 miles">200 miles</option>
+    <option value="10 miles">400 miles</option>
+    <option value="50 miles">600 miles</option>
+    <option value="100 miles">800 miles</option>
+    <option value="200 miles">1000 miles</option>
+    <option value="400 miles">1200 miles</option>
+  </select>
+</div> 
+<div class="form-group">
+  <label for="3">No. of Satellites</label>
+  <select id="3" name="No._of_Satellites" class="form-control">
+    <option value="1">1</option>
+    <option value="2">3</option>
+    <option value="3">5</option>
+    <option value="4">8</option>
+    <option value="5">12</option>
+    <option value="6">16</option>
+    <option value="7">20</option>
+    <option value="8">30</option>
+    <option value="9">40</option>
+    <option value="10">50</option>
+
+
+  </select>
+</div>    
+
+<center><a id="ss" onclick="loadParams()" style="margin-bottom: 20px !important; font-size: 18px" href="#" class="btn btn-success" >Begin simulation </a></center>
+	</div>
+</div>
+        <script>
+            
+        
+        </script>
+
+
+        <script>
+        
+            //-Planet Earth--->/
+            var geometry = new THREE.PlaneGeometry( 480, 240, 32 );
+            var texture = new THREE.TextureLoader().load( 'https://res.cloudinary.com/witovah/image/upload/v1618115906/BigLNDdata_2_gqsuma.png' );
+            // immediately use the texture for material creation
+            var material = new THREE.MeshBasicMaterial( { map: texture } );
+            var earth = new THREE.Mesh( geometry, material );
+            scene.add( earth );
+            //-position/
+            earth.position.x = 0;
+            earth.position.y = 0;
+            //-end-----/
+		
+	var geometry = new THREE.SphereBufferGeometry( 3.5, 8, 26, 0, 6.3, 0, 3.3 );
+        var material = new THREE.MeshBasicMaterial( { color: 0x000000, side: THREE.DoubleSide } );
+        var sateliteArray = [];
+        var orbitLogX = [];
+        var orbitLogXState = [];
+        var sateliteArrayRight = [];
+        var orbitLogY = [];
+        var orbitLogYState = [];
+        
+        var lastAdded = 0;
+	var sateliteAmount = 10;
+        var satellitesAltitude = 0;
+        
+        window.onload = function(e){ 
+            document.getElementById('sateLiteStatus').innerHTML='  Satellites launched: '+sateliteAmount;
+            clickPopupButton();
+        }
+        function loadParams(){
+            var satelliteNoParam = document.getElementById("1").value;
+            var altitudeParam = document.getElementById("2").value;
+            var noOfAntennaOnSatellite = document.getElementById("3").value;
+            var sizeOfAntennaOnSatellite = document.getElementById("4").value;
+            var sizeOfAntennaOnGroundStation = document.getElementById("5").value;
+            var transPowOfAntennaOnGroundStation = document.getElementById("6").value;
+            var transPowOfAntennaOnsatellite = document.getElementById("7").value;
+            var gainDBOfGroundStationAntena = document.getElementById("8").value;
+            var gainDBOfSatAntena = document.getElementById("9").value;
+            var groundStationTransFreq = document.getElementById("10").value;
+            var satelliteTransFreq = document.getElementById("11").value;
+            window.alert('Satellite No:'+satelliteNoParam+"\n Altitude: "+altitudeParam);
+            sateliteAmount = satelliteNoParam;
+            satellitesAltitude = altitudeParam;
+            addThirtySatellitesOutside(satelliteNoParam);//this call adds thirty satelites outside the screen and keep track of them in an array
+            initializeSatelites();//this call makes satellites available in array available for packet transmission
+        
+    }
+        function increaseSateliteAmountAndUpdateHtml(){
+            sateliteAmount++;
+            document.getElementById('sateLiteStatus').innerHTML='  Satellites launched: '+sateliteAmount;
+        }
+        function addThirtySatellitesOutside(noOfSatellites){
+            
+            for(let i = 0; i < noOfSatellites; i++){
+                
+                addSateliteOutside();
+            }
+            alert('added');
+        }
+        function addSateliteOutside(){
+            //alert('Satelite added');
+            if(lastAdded===0){  
+                sateliteArray.push(new THREE.Mesh( geometry, material ));
+                
+                scene2.add( sateliteArray[sateliteArray.length-1] );
+                
+                var leftSatelitProp = Math.floor(Math.random()*260) + 240; // this will get a number between 1 and 99;
+                leftSatelitProp *= Math.floor(Math.random()*2) == 1 ? 1 : -1; // this will add minus sign in 50% of cases
+                var leftSateliteAltitude = satellitesAltitude;
+                sateliteArray[sateliteArray.length-1].position.x = leftSatelitProp;
+                sateliteArray[sateliteArray.length-1].position.z = leftSateliteAltitude;
+                if(leftSatelitProp>0){
+                   orbitLogXState.push(0); 
+                }else{
+                    orbitLogXState.push(1);
+                }
+                orbitLogXState.push(0);
+                orbitLogX.push(leftSatelitProp);
+
+            
+                console.log(leftSatelitProp);
+                console.log(leftSateliteAltitude);
+                
+                var leftSatelitPropy = Math.floor(Math.random()*100) + 0; // this will get a number between 1 and 99;
+                leftSatelitPropy *=  Math.floor(Math.random()*2) == 1 ? 1 : -1; // this will add minus sign in 50% of cases
+                sateliteArray[sateliteArray.length-1].position.y = leftSatelitPropy;
+                console.log(leftSatelitPropy);
+                
+                lastAdded=1;
+            }else{
+                
+                
+                sateliteArrayRight.push(new THREE.Mesh( geometry, material ));
+                
+                scene2.add( sateliteArrayRight[sateliteArrayRight.length-1] );
+                
+                
+                var rightSatelitProp = Math.floor(Math.random()*215) + 0; // this will get a number between 1 and 99;
+                rightSatelitProp *= Math.floor(Math.random()*2) == 1 ? 1 : -1; // this will add minus sign in 50% of cases
+                var rightSateliteAltitude = satellitesAltitude;
+                sateliteArrayRight[sateliteArrayRight.length-1].position.x = rightSatelitProp;
+                sateliteArrayRight[sateliteArrayRight.length-1].position.z = rightSateliteAltitude;
+                
+                
+                console.log(rightSatelitProp);
+                console.log(rightSateliteAltitude);
+                
+                var leftSatelitPropy = Math.floor(Math.random()*150) + 130; // this will get a number between 1 and 99;
+                leftSatelitPropy *=  Math.floor(Math.random()*2) == 1 ? 1 : -1; // this will add minus sign in 50% of cases
+                sateliteArrayRight[sateliteArrayRight.length-1].position.y = leftSatelitPropy;
+                if(leftSatelitPropy>0){
+                orbitLogYState.push(0);
+                }else{
+                    orbitLogYState.push(1);
+                }
+                orbitLogY.push(leftSatelitPropy);
+                console.log(leftSatelitPropy);
+                
+                lastAdded=0;
+            }
+        }
+        //The function below creates new satelites, set their properties and
+        // push them into an array that will be referenced later to orbit and send packets through them
+        function addSatelite(){
+            //alert('Satelite added');
+            if(lastAdded===0){  
+                sateliteArray.push(new THREE.Mesh( geometry, material ));
+                
+                scene2.add( sateliteArray[sateliteArray.length-1] );
+                
+                var leftSatelitProp = Math.floor(Math.random()*215) + 0; // this will get a number between 1 and 99;
+                leftSatelitProp *= Math.floor(Math.random()*2) == 1 ? 1 : -1; // this will add minus sign in 50% of cases
+                var leftSateliteAltitude = satellitesAltitude;
+                sateliteArray[sateliteArray.length-1].position.x = leftSatelitProp;
+                sateliteArray[sateliteArray.length-1].position.z = leftSateliteAltitude;
+
+            
+                console.log(leftSatelitProp);
+                console.log(leftSateliteAltitude);
+                
+                var leftSatelitPropy = Math.floor(Math.random()*100) + 0; // this will get a number between 1 and 99;
+                leftSatelitPropy *=  Math.floor(Math.random()*2) == 1 ? 1 : -1; // this will add minus sign in 50% of cases
+                sateliteArray[sateliteArray.length-1].position.y = leftSatelitPropy;
+                console.log(leftSatelitPropy);
+                
+                lastAdded=1;
+            }else{
+                
+                
+                sateliteArrayRight.push(new THREE.Mesh( geometry, material ));
+                
+                scene2.add( sateliteArrayRight[sateliteArrayRight.length-1] );
+                
+                
+                var rightSatelitProp = Math.floor(Math.random()*215) + 0; // this will get a number between 1 and 99;
+                rightSatelitProp *= Math.floor(Math.random()*2) == 1 ? 1 : -1; // this will add minus sign in 50% of cases
+                var rightSateliteAltitude = satellitesAltitude;
+                sateliteArrayRight[sateliteArrayRight.length-1].position.x = rightSatelitProp;
+                sateliteArrayRight[sateliteArrayRight.length-1].position.z = rightSateliteAltitude;
+                
+                console.log(rightSatelitProp);
+                console.log(rightSateliteAltitude);
+                
+                var leftSatelitPropy = Math.floor(Math.random()*100) + 0; // this will get a number between 1 and 99;
+                leftSatelitPropy *=  Math.floor(Math.random()*2) == 1 ? 1 : -1; // this will add minus sign in 50% of cases
+                sateliteArrayRight[sateliteArrayRight.length-1].position.y = leftSatelitPropy;
+                console.log(leftSatelitPropy);
+                
+                lastAdded=0;
+            }
+        }
+        //The function below registers all the satelites in satlist 
+        // array so they can be used to transfer packets
+        function initializeSatelites(){
+               for(let i = 0; i < sateliteArrayRight.length; i++){
+                  satlist.push(sateliteArrayRight[i]);
+                  satlist.push(sateliteArray[i]);
+              }
+              //We're going to model the antenna rotation position of
+              // each satelite with numbers and store it in satelliteAntennaRotationPositionArray located in connection.js file
+              //  and we're going to be updating it every milliseconds 
+              // to imitate and simulate real life rotation of antenna positions on each satellite.
+              //Since satelites position affects their availability for packet transfer and ground station usage
+              //and all the satelites will not be of the same antenna position at a time, we'll model this variation
+              //with numbers in satelliteAntennaRotationPositionArray for each satellites.   
+              //So if a full satellite rotation cycle is modeled using 1000 milliseconds, 600 millisecons(60% of 1 second) should
+              //be the up time and 400 milliseconds(40% of 1 second)should be the down time
+              //that effectively implies that satellites rotation cycle below or equals 400 milliseconds
+              // is assumed to be unavailable. Now summing up all the seconds used for simulation(assuming we try to send 
+              // packets every second  ) 60% of the total simulation time will have each satelite with a packet transmission
+              // ready alignment while the remaining 40% wont.
+              // 
+              //   so first of all, we'll give the random satelite antenna rotation position to
+              // randomize the process
+              //
+              for(let i = 0; i < satlist.length; i++){
+                  satelliteAntennaRotationPositionArray.push((Math.floor(Math.random()*100) + 1)*100);//Assigning random satelite antenna rotation position
+              }
+              setInterval(rotateSatelliteAntennaPosition(), 90);//Rotate satelite every 90 millisecond
+        }
+        //This function will loop through satelliteAntennaRotationPositionArray array and 
+        // adjust the satelite antenna position by increasing it's position by 100 milliseconds
+        function rotateSatelliteAntennaPosition(){
+            
+           for(let i = 0; i < satelliteAntennaRotationPositionArray.length; i++){
+               var currentPosition = satelliteAntennaRotationPositionArray[i];
+               if(currentPosition===1000){//has the antenna successfully completed a full cycle
+                   satelliteAntennaRotationPositionArray[i] = 0;//if yes, start all over again
+               }else{
+                   satelliteAntennaRotationPositionArray[i] += 100;//if no, keep rotatiing
+               }
+           }
+        }
+        
+        function clickPopupButton() {
+              var jsfCommandLink2 = document.getElementById("btn19");
+              jsfCommandLink2.click();
+          }
+        
+        </script>
+        
+        
+        
+        <div id="info" style="margin-top:370px;margin-left:-20px; font-weight: bold; color: black; font-size:19px; font-family:'Sans-serif', Calibri;cursor: default;"></div>
+
+        
+        <div id="databoard">
+          <p style="color:transparent;;font-size:15px;padding-top:12px;font-family:'Calibri', Sans-serif;">Rotating velocity: <b id="rv">0.01</b><span style="padding-right:10px;">rpm</span>  Orbiting velocity: <span id="ov">16,000</span><span style="padding-right:10px;">mph</span> Field of View: <b id="fov">7.3</b><span style="padding-right:10px;">units</span>(<b id="fovim">10000</b>miles) <span id="sateLiteStatus" style="padding-left:9px;"></span></p>
+        </div>
+        
+        
+        <div id="controls">
+
+          
+        
+        <div id="overlay">
+        <p id = "desc" style="color:white;font-size:10px;margin-top:6px;padding-left:25px;"><b style="color:#FFA500;font-size:70px; line-height:0px;">.</b>Jordan <b style="color:#ff0000;font-size:70px; line-height:0px;">.</b>Saudi arabia <b style="color:#800000;font-size:70px; line-height:0px;">.</b>Libya <b style="color:#FF69B4;font-size:70px; line-height:0px;">.</b>Algeria <b style="color:#000000;font-size:70px; line-height:0px;">.</b>Iran <b style="color:#01ff00;font-size:70px; line-height:0px;">.</b>Afghanistan <b style="color:#ff471a;font-size:70px; line-height:0px;">.</b>Tunisia</p>
+        </div>
+
+        </div>
+
+
+        <div id="ctr">
+        <!-- <button id="btn1">Zoom +</button>
+        <button id="btn2">Zoom -</button> -->
+        <button id="btn4">Simulations completed: 0</button>
+        <button id="btn5">Satellite Size: 1U Cubesat</button>
+        <button id="btn6">Altitude: 200 miles</button>
+        <button id="btn7">Satellites deployed: 1</button>
+        <button id="btn8"><i class="fa-li fa fa-spinner fa-spin"></i>Start New Simulation</button>
+        <a href="#openModal" class="btn btn-success" style="top: 175px !important;left: 904px !important; position: absolute; z-index: 1000;width: 130px;height: 35px;" id="btn9"><i class="fa-li fa fa-spinner fa-spin"></i>End Simulation</a>
+	<!-- <a  onclick="addSatelite()" class="btn btn-success" style="top: 235px !important;left: 904px !important; position: absolute; z-index: 1000;width: 150px;height: 35px;" ><i class="fa-li fa fa-spinner fa-spin"></i>Launch new satellite</a>	 -->
+        <button id="btn10" info="Hover over the Data Board to show controls again"><i class="fa-li fa fa-spinner fa-spin" style="color:#ffffff"></i>Compute Monte-Carlo Data</button>
+        <div id="time">
+          <time><b>00:00:<span id="factor">00</span></b></time>
+        </div>
+
+        
+
+        <div id="note"><p style="font-size: 13px;">Orbital Period for 200 mile altitude: 91 mins</b></p></div>
+
+        <div id="note2"><p style="font-size: 12px;">Scale: 1 min 6 secs : to represents 91 mins</p></div>
+        
+        <a href="#openModal2" class="btn btn-success" style="top: 145px !important;left: 904px !important; position: absolute; z-index: 1000;width: 130px;height: 35px; visibility: hidden" id="btn19"><i class="fa-li fa fa-spinner fa-spin"></i></a>
+        </div>
+
+
+        <script>
+        var time = document.getElementsByTagName('time')[0];
+        var seconds = 0, minutes = 0, hours = 0, t;
+
+        function add() {
+           seconds++;
+           if (seconds >= 60) {
+               seconds = 0;
+               minutes++;
+               if (minutes >= 60) {
+                   minutes = 0;
+                   hours++;
+                }
+            }
+        time.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+
+        timer();
+        }
+
+        function timer() {
+           t = setTimeout(add, 1000);
+        }
+        timer();
+        document.getElementById("btn8").addEventListener("click", function() {
+            location.reload();
+        });
+
+        function chg() {
+            if (seconds == 03) {
+                dot = new THREE.Points( dotGeometry, dotMaterial );
+            }
+        } 
+        console.log("This is the value of seconds " + seconds);
+        chg();
+        </script>
+
+
+        
+        
+        <script>  
+        document.getElementById("btn1").addEventListener("click", function() {
+            var zm = camera.getFocalLength();
+            zm += 2;
+            camera.setFocalLength(zm); 
+            fov_im -= 2000;
+            document.getElementById("fov").innerHTML = zm;
+            document.getElementById("fovim").innerHTML = fov_im;
+
+        }); 
+
+       document.getElementById("btn2").addEventListener("click", function() {
+
+          
+        //    if (camera.getFocalLength() <= 8) {
+        //        var god = "AKANG";
+        //    } else {
+            zo -= 0.1;
+            camera.setFocalLength(zo);
+            fov_im += 2000;
+            document.getElementById("fov").innerHTML = zo;
+            document.getElementById("fovim").innerHTML = fov_im;
+        //    }
+        }); 
+        
+        // document.getElementById("databoard").addEventListener("mouseover", function() {
+        //     document.getElementById("controls").style.visibility='visible';
+        //     document.getElementById("ctr").style.visibility='visible';
+        // }); 
+
+        document.getElementById("btn9").addEventListener("click", function() {
+            stopflash();
+            document.getElementById("run_duration").innerHTML = time.textContent;
+        });
+
+        
+
+
+        document.getElementById("btn4").addEventListener("click", function() {
+          rot1x += 0.04;
+          rot1y += 0.02;
+
+          rot2x += 0.04;
+          rot2y += 0.02;
+
+          rot3x += 0.04;
+          rot3y += 0.02;
+
+          rot4x += 0.04;
+          rot4y += 0.02;
+
+          rot5x += 0.04;
+          rot5y += 0.02;
+
+          rot6x += 0.04;
+          rot6y += 0.02;
+
+          rot6x += 0.04;
+          rot6y += 0.02;
+
+          rot7x += 0.04;
+          rot7y += 0.02;
+
+          rot8x += 0.04;
+          rot8y += 0.02;
+
+          rot9x += 0.04;
+          rot9y += 0.02;
+
+          rot10x += 0.04;
+          rot10y += 0.02;
+
+          rot11x += 0.04;
+          rot11y += 0.02;
+
+          rot12x += 0.04;
+          rot12y += 0.02;
+
+          rot13x += 0.04;
+          rot13y += 0.02;
+
+          rot14x += 0.04;
+          rot14y += 0.02;
+
+          rot15x += 0.04;
+          rot15y += 0.02;
+
+          rot16x += 0.04;
+          rot16y += 0.02;
+
+          rot17x += 0.04;
+          rot17y += 0.02;
+
+          rot18x += 0.04;
+          rot18y += 0.02;
+
+          rot19x += 0.04;
+          rot19y += 0.02;
+
+          rot20x += 0.04;
+          rot20y += 0.02;
+
+          r_v += 0.01;
+          document.getElementById("rv").innerHTML = r_v;
+        });
+
+
+        document.getElementById("btn5").addEventListener("click", function() {
+          rot1x -= 0.01;
+          rot1y -= 0.02;
+
+          rot2x -= 0.01;
+          rot2y -= 0.02;
+
+          rot3x -= 0.01;
+          rot3y -= 0.02;
+
+          rot4x -= 0.01;
+          rot4y -= 0.02;
+
+          rot5x -= 0.01;
+          rot5y -= 0.02;
+
+          rot6x -= 0.01;
+          rot6y -= 0.02;
+
+          rot6x -= 0.01;
+          rot6y -= 0.02;
+
+          rot7x -= 0.01;
+          rot7y -= 0.02;
+
+          rot8x -= 0.01;
+          rot8y -= 0.02;
+
+          rot9x -= 0.01;
+          rot9y -= 0.02;
+
+          rot10x -= 0.01;
+          rot10y -= 0.02;
+
+          rot11x -= 0.01;
+          rot11y -= 0.02;
+
+          rot12x -= 0.01;
+          rot12y -= 0.02;
+
+          rot13x -= 0.01;
+          rot13y -= 0.02;
+
+          rot14x -= 0.01;
+          rot14y -= 0.02;
+
+          rot15x -= 0.01;
+          rot15y -= 0.02;
+
+          rot16x -= 0.01;
+          rot16y -= 0.02;
+
+          rot17x -= 0.01;
+          rot17y -= 0.02;
+
+          rot18x -= 0.01;
+          rot18y -= 0.02;
+
+          rot19x -= 0.01;
+          rot19y -= 0.02;
+
+          rot20x -= 0.01;
+          rot20y -= 0.02;
+
+          r_v -= 0.01;
+          document.getElementById("rv").innerHTML = r_v;
+        });
+
+        document.getElementById("btn6").addEventListener("click", function() {
+          pos1x -= 0.0039031;
+          pos1y += 0.00834;
+
+          pos2x -= 0.003011;
+          pos2y += 0.00241;
+
+          pos3x -= 0.0071;
+          pos3y -= 0.00900;
+
+          pos4y -= 0.00234;
+
+          pos5x += 0.003261;
+          pos5y -= 0.00544;
+
+          pos6x -= 0.002321;
+          pos6y += 0.004904;
+
+          pos7x += 0.009821;
+          pos7y -= 0.008404;
+
+          pos8x -= 0.005454
+          pos8y -= 0.0029924;
+
+          pos9x -= 0.0080321;
+          pos9y -= 0.0073924;
+
+          pos10x -= 0.007932;
+          pos10y -= 0.0032994;
+
+          pos11x -= 0.009221;
+          pos11y += 0.0037274;
+
+          pos12x += 0.0073221;
+
+          pos13x -= 0.008923;
+          pos13y += 0.00298074;
+
+          pos14x -= 0.004329;
+          pos14y -= 0.00564;
+
+          pos15x += 0.004423;
+          pos15y -= 0.0034394;
+
+          pos16x += 0.00521;
+          pos16y += 0.00344444;
+
+          pos17x -= 0.004521;
+          pos17y += 0.009764;
+
+          pos18x += 0.006521;
+          pos18y -= 0.0055774;
+
+          pos19x += 0.0021;
+          pos19y -= 0.0097554;
+
+          pos20x -= 0.0021;
+          pos20y += 0.0024354;
+
+          pos21x += 0.0083982;
+          pos21y -= 0.003239;
+
+          pos22x += 0.0023263;
+          pos22y -= 0.006178;
+
+          pos23x += 0.007613;
+          pos23y -= 0.0071262;
+
+          pos24x += 0.002231;
+          pos24y -= 0.0024354;
+
+          pos25x += 0.00233891;
+          pos25y -= 0.0089224354;
+
+          pos26x += 0.0025231;
+          pos26y -= 0.0094354;
+
+          pos27x += 0.00652661;
+          pos27y -= 0.0024354;
+
+          pos28x += 0.00871721;
+          pos28y -= 0.005264;
+
+          pos29x += 0.006311;
+          pos29y -= 0.007284;
+
+          pos30x += 0.0062821;
+          pos30y -= 0.002124;
+
+          o_v += 333;
+          document.getElementById("ov").innerHTML = o_v;
+        });
+
+        document.getElementById("btn7").addEventListener("click", function() {
+          pos1x += 0.0039031;
+          pos1y -= 0.00834;
+
+          pos2x += 0.003011;
+          pos2y -= 0.00241;
+
+          pos3x += 0.0071;
+          pos3y += 0.00900;
+
+          pos4y += 0.00234;
+
+          pos5x -= 0.003261;
+          pos5y += 0.00544;
+
+          pos6x += 0.002321;
+          pos6y -= 0.004904;
+
+          pos7x -= 0.009821;
+          pos7y += 0.008404;
+
+          pos8x += 0.005454
+          pos8y += 0.0029924;
+
+          pos9x += 0.0080321;
+          pos9y += 0.0073924;
+
+          pos10x += 0.007932;
+          pos10y += 0.0032994;
+
+          pos11x += 0.009221;
+          pos11y -= 0.0037274;
+
+          pos12x -= 0.0073221;
+
+          pos13x += 0.008923;
+          pos13y -= 0.00298074;
+
+          pos14x += 0.004329;
+          pos14y += 0.00564;
+
+          pos15x -= 0.004423;
+          pos15y += 0.0034394;
+
+          pos16x -= 0.00521;
+          pos16y -= 0.00344444;
+
+          pos17x += 0.004521;
+          pos17y -= 0.009764;
+
+          pos18x -= 0.006521;
+          pos18y += 0.0055774;
+
+          pos19x -= 0.0021;
+          pos19y += 0.0097554;
+
+          pos20x += 0.0021;
+          pos20y -= 0.0024354;
+
+          pos21x -= 0.0083982;
+          pos21y += 0.003239;
+
+          pos22x -= 0.0023263;
+          pos22y += 0.006178;
+
+          pos23x += 0.007613;
+          pos23y -= 0.0071262;
+
+          pos24x -= 0.002231;
+          pos24y += 0.0024354;
+
+          pos25x -= 0.00233891;
+          pos25y += 0.0089224354;
+
+          pos26x -= 0.0025231;
+          pos26y += 0.0094354;
+
+          pos27x -= 0.00652661;
+          pos27y += 0.0024354;
+
+          pos28x -= 0.00871721;
+          pos28y += 0.005264;
+
+          pos29x -= 0.006311;
+          pos29y += 0.007284;
+
+          pos30x -= 0.0062821;
+          pos30y += 0.002124;
+
+          o_v -= 333;
+          document.getElementById("ov").innerHTML = o_v;
+        });
+        </script>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+  
+<div id="openModal" class="modalDialog">
+    
+    
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+    <style>
+
+.modalDialog {
+	position: fixed;
+	font-family: Arial, Helvetica, sans-serif;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.8);
+	z-index: 99999;
+	opacity:0;
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+	pointer-events: none;
+}
+.modalDialog:target {
+	opacity:1;
+	pointer-events: auto;
+}
+.modalDialog > div {
+	width: 60%;
+	position: relative;
+	margin: 10% auto;
+	padding: 5px 20px 13px 20px;
+	border-radius: 10px;
+	background: #fff;
+	background: -moz-linear-gradient(#fff, #efebeb);
+	background: -webkit-linear-gradient(#fff, #efebeb);
+	background: -o-linear-gradient(#fff, #efebeb);
+}
+.close {
+	background: #606061;
+	color: #FFFFFF;
+	line-height: 25px;
+	position: absolute;
+	right: -12px;
+	text-align: center;
+	top: -10px;
+	width: 24px;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	-moz-box-shadow: 1px 1px 3px #000;
+	-webkit-box-shadow: 1px 1px 3px #000;
+	box-shadow: 1px 1px 3px #000;
+}
+
+.close:hover { background: #00d9ff; }
+</style>
+	<div style="height:650px; margin-top: 10px !important; overflow-y: scroll">
+		
+        <h2>Log report <span style='float:right;'><a id="closelog" href="#close" class="btn btn-danger" >X Close</a><a id="gpdf" class="btn btn-success btn-block" style="width: 130px;height: 35px;">Print PDF</a> </span></h2>
+        <script>
+          document.getElementById("closelog").addEventListener("click", function() {
+            window.alert('Simulation Ended, Click "Run Again" to Reload Another simulation');
+        });
+        </script>
+        <br/>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+</style>
+<div id="ignoreContent2">
+
+                    
+</div>
+<div id="PDFcontent">
+<h5><center><b style='float:left;'>Log report for previous run</b><b style='float:right;'>Run Duration:<span id='run_duration'>00:00:00</span></b></center></h5>
+ <br/>
+<table id="printable">
+  <tr>
+    <th>Packet No.</th>
+    <th>Destination</th>
+    <th>Satellite <br>in Use</th>
+    <th>Delay <br>Experienced (YES/NO)</th>
+    <th>Duration <br>of Delay</th>
+  </tr>
+</table>
+
+</div>
+                  
+<script>
+
+// var pdfdoc = new jsPDF();
+
+var specialElementHandlers = {
+
+'#ignoreContent': function (element, renderer) {
+
+return true;
+
+}
+
+};
+
+ 
+
+$(document).ready(function(){
+
+$("#gpdf").click(function(){
+
+pdfdoc.fromHTML($('#PDFcontent').html(), 10, 10, {
+
+'width': 110,
+
+'elementHandlers': specialElementHandlers
+
+});
+
+pdfdoc.save('log.pdf');
+
+});});
+</script>
+                
+
+	</div>
+</div>
+
+
+
+	</body>
+</html>

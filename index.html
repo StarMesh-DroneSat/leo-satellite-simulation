@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+        <title>London - Monte-Carlo Satellite Simulation Application</title>
+		<!--===============================================================================================-->	 
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+        <!--===============================================================================================-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!--===============================================================================================-->
+        <link rel="icon" type="image/png" href="csw/images/icons/favicon.ico"/>
+    </head>
+    
+
+	<body>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use-->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyDpfvXiGGoGJLw8VPHceSOPFWa6ADfe5kk",
+        authDomain: "starmesh-dronesat.firebaseapp.com",
+        databaseURL: "https://starmesh-dronesat-default-rtdb.firebaseio.com",
+        projectId: "starmesh-dronesat",
+        storageBucket: "starmesh-dronesat.appspot.com",
+        messagingSenderId: "268802826821",
+        appId: "1:268802826821:web:44085d4929af6d7c02792c"
+
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+    
+
+   <center> 
+    <button id="btnOpenControls" style="margin-bottom:19px;margin-top:8px;float:center;position: relative;">Open Controls</button> 
+    <button id="btnCloseControls" style="margin-bottom:19px;margin-top:8px;float:center;position: relative;">Close Controls</button> 
+   </center>
+
+   <script>
+      document.getElementById("btnCloseControls").addEventListener("click", function() {
+          document.getElementById("controls").style.visibility='hidden';
+          document.getElementById("ctr").style.visibility='hidden';
+          
+      });
+
+      document.getElementById("btnOpenControls").addEventListener("click", function() {
+          document.getElementById("controls").style.visibility='visible';
+          document.getElementById("ctr").style.visibility='visible';
+          
+      });
+   </script>
+
+        <script src="js/three.js"></script>
+        <script src="js/packets.js"></script>
+        <script src="js/values.js"></script>
+        <script src="js/rotation.js"></script>
+        <script src="js/orbit.js"></script>
+        <script src="js/packets.js"></script>
+        <script src="js/sat.js"></script>
+        <script src= "js/connection.js"></script>
+        <script src= "js/newSatLoc.js"></script> 
+
+    <script>
+      function sent() {
+        alert('Simulation Data Saved to Database')
+        firebase
+          .database()
+          .ref("simulation-data/" + Date.now())
+          .set({
+            runtime:time.textContent,
+            altitude:alt,
+            total_packets:packetnum,
+            delayed_packets:delayedpackets,
+            instant_packets:sentpackets,
+            ave_delay_period:'45',
+          });
+      }
+
+      var dara = 0;
+      var x = 0;
+      var simnum = 1;
+
+      function fetch() {
+        firebase
+          .database()
+          .ref("simulation-data")
+          .once("value", function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+              console.log("data " + x);
+              console.log(childSnapshot.val().instant_packets);
+
+              var table = document.getElementById("mont-table");
+              var row = table.insertRow();
+
+              var dell1 = row.insertCell(0);
+              var dell2 = row.insertCell(1);
+              var dell3 = row.insertCell(2);
+              var dell4 = row.insertCell(3);
+              var dell5 = row.insertCell(4);
+              var dell6 = row.insertCell(5);
+
+              if (childSnapshot.val().altitude == "300") {
+                dell1.innerHTML = "simulation " + simnum;
+                dell2.innerHTML = "instant:  " + childSnapshot.val().instant_packets + 
+                                  "\ndelayed:  " + childSnapshot.val().delayed_packets +
+                                  "\ntotal:  " + (childSnapshot.val().total_packets - 1) +
+                                  "\n" + "                                         " + 
+                                  "\n" + "                                         " + 
+                                  "\nruntime:  " + childSnapshot.val().runtime + "\n" +
+                                  "\nmean latency:  " + "00:00:00";  
+
+              } else if (childSnapshot.val().altitude == "400") {
+                dell1.innerHTML = "simulation " + simnum;
+                dell3.innerHTML = "instant:  " + childSnapshot.val().instant_packets + 
+                                  "\ndelayed:  " + childSnapshot.val().delayed_packets +
+                                  "\ntotal:  " + (childSnapshot.val().total_packets - 1) +
+                                  "\n" + "                                         " + 
+                                  "\n" + "                                         " + 
+                                  "\nruntime:  " + childSnapshot.val().runtime + "\n" +
+                                  "\nmean latency:  " + "00:00:00"; 
+
+              } else if (childSnapshot.val().altitude == "600") {
+                dell1.innerHTML = "simulation " + simnum;
+                dell4.innerHTML = "instant:  " + childSnapshot.val().instant_packets + 
+                                  "\ndelayed:  " + childSnapshot.val().delayed_packets +
+                                  "\ntotal:  " + (childSnapshot.val().total_packets - 1) +
+                                  "\n" + "                                         " + 
+                                  "\n" + "                                         " + 
+                                  "\nruntime:  " + childSnapshot.val().runtime + "\n" +
+                                  "\nmean latency:  " + "00:00:00"; 
+
+              } else if (childSnapshot.val().altitude == "800") {
+                dell1.innerHTML = "simulation " + simnum;
+                dell5.innerHTML = "instant:  " + childSnapshot.val().instant_packets + 
+                                  "\ndelayed:  " + childSnapshot.val().delayed_packets +
+                                  "\ntotal:  " + (childSnapshot.val().total_packets - 1) +
+                                  "\n" + "                                         " + 
+                                  "\n" + "                                         " + 
+                                  "\nruntime:  " + childSnapshot.val().runtime + 
+                                  "\nmean latency:  " + "00:00:00"; 
+
+              } else if (childSnapshot.val().altitude == "1000") {
+                dell1.innerHTML = "simulation " + simnum;
+                dell6.innerHTML = "instant:  " + childSnapshot.val().instant_packets + 
+                                  "\ndelayed:  " + childSnapshot.val().delayed_packets +
+                                  "\ntotal:  " + (childSnapshot.val().total_packets - 1) +
+                                  "\n" + "                                         " + 
+                                  "\n" + "                                         " + 
+                                  "\nruntime:  " + childSnapshot.val().runtime + 
+                                  "\nmean latency:  " + "00:00:00";  
+              }
+               
+              x++;
+              simnum++;
+              document.getElementById("arson").innerHTML = x;
+              document.getElementById("simps").innerHTML = x; 
+            });
+            // dell1.innerHTML = "Total";
+            // dell2.innerHTML = 
+
+
+          });
+      }
+      fetch();
+
+      function clearStorage() {
+        firebase
+          .database()
+          .ref("simulation-data")
+          .remove();
+        alert('Storage Cleared'); 
+        location.reload(); 
+      };
+    </script>    
+        
+      
+
+
+<div id="openModal2" class="modalDialog" >
+    
+    
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+    <style>
+
+.modalDialog {
+	position: fixed;
+	font-family: Arial, Helvetica, sans-serif;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.8);
+	z-index: 99999;
+	opacity:0;
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+	pointer-events: none;
+}
+.modalDialog:target {
+	opacity:1;
+	pointer-events: auto;
+}
+.modalDialog > div {
+	width: 60%;
+	position: relative;
+	margin: 10% auto;
+	padding: 5px 20px 13px 20px;
+	border-radius: 10px;
+	background: #fff;
+	background: -moz-linear-gradient(#fff, #efebeb);
+	background: -webkit-linear-gradient(#fff, #efebeb);
+	background: -o-linear-gradient(#fff, #efebeb);
+}
+.close {
+	background: #606061;
+	color: #FFFFFF;
+	line-height: 25px;
+	position: absolute;
+	right: -12px;
+	text-align: center;
+	top: -10px;
+	width: 24px;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	-moz-box-shadow: 1px 1px 3px #000;
+	-webkit-box-shadow: 1px 1px 3px #000;
+	box-shadow: 1px 1px 3px #000;
+}
+
+.close:hover { background: #00d9ff; } 
+</style>
+<div style="height:400px; margin-top: 10px !important; overflow-y: scroll">
+		
+    
+    <center><h3>Simulation Background </h3></center> 
+    <!-- <span style='float:right;'><a id="closelog2" href="#close"  class="btn btn-danger" >X Close</a> </span> -->
+        <script>
+          document.getElementById("closelog2").addEventListener("click", function() {
+           window.alert('Satellite No:'+satelliteNoParam+" Altitude: "+altitudeParam);
+           loadParams()
+        //window.alert('Closed');
+        });
+        
+        </script>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+</style>
+<h5>Imagine the British Secret Intelligence Service (MI6) needed a Private Internet to communicate
+   with its agents in classified locations around the globe. What satellite configuration will best support the MI6 and its
+  agents around the globe?</h5>
+<h5>We iterate "Random Messages" coming out of London at "Random Intervals" to "Random Locations" to track:-</h5>
+<h5>(i) Total Messages Delivered.<br/>
+   (ii) Total Messages Delivered 'instantaneously' [without delay}.<br/>
+   (iii) Total Messages Delivered 'belatedly' [with delay}.<br/>
+   (iv) Average Delay time of belated messages.<br/>
+   <br/>
+
+   of 30 Satellites launched at random inclined orbits all at same altitudes of (100 miles, 200 miles, 300 miles, 400 miles, 500 miles, 600 miles)
+    </h5>
+  
+<h5>Enter simulation parameter in the form to begin:</h5>
+
+<div class="form-group">
+  <label for="Altitude_of_Satellite">Altitude of Satellite</label>
+  <select id="altitude" name="" class="form-control">
+    <option id="altitude" value="300">300 miles</option>
+    <option id="altitude" value="400">400 miles</option>
+    <option id="altitude" value="600">600 miles</option>
+    <option id="altitude" value="800">800 miles</option>
+    <option id="altitude" value="1000">1000 miles</option>
+  </select>
+</div>  
+<br/>
+<center><a id="ss" onclick="loadParams()" style="margin-bottom: 20px !important; font-size: 18px" href="#" class="btn btn-success" >Begin simulation </a></center>
+	</div>
+</div>
+
+        <script>
+
+          //-Planet Earth--->/
+          var geometry = new THREE.PlaneGeometry( 480, 240, 32 );
+          var texture = new THREE.TextureLoader().load( 'https://res.cloudinary.com/witovah/image/upload/v1619775375/BigLNDdata_yxuevy.png' );
+          // immediately use the texture for material creation
+          var material = new THREE.MeshBasicMaterial( { map: texture } );
+          var earth = new THREE.Mesh( geometry, material );
+          scene.add( earth );
+          //-position/
+          earth.position.x = 0;
+          earth.position.y = 0;
+          //-end-----/
+    
+          var geometry = new THREE.SphereBufferGeometry( 3.5, 8, 26, 0, 6.3, 0, 3.3 );
+          var material = new THREE.MeshBasicMaterial( { color: 0x000000, side: THREE.DoubleSide } );
+          var sateliteArray = [];
+          var orbitLogX = [];
+          var orbitLogXState = [];
+          var sateliteArrayRight = [];
+          var orbitLogY = [];
+          var orbitLogYState = [];
+    
+          var lastAdded = 0;
+          var sateliteAmount = 10;
+          var satellitesAltitude = 0;
+
+          var data = "res";
+          
+          window.onload = function(e){ 
+              document.getElementById('sateLiteStatus').innerHTML='  Satellites launched: '+sateliteAmount;
+              clickPopupButton();
+          }
+    
+    
+          function clickPopupButton() {
+            var jsfCommandLink2 = document.getElementById("btn19");
+            jsfCommandLink2.click();
+          }   
+        
+        </script>
+        
+        
+        
+        <div id="info" style="margin-top:370px;margin-left:-20px; font-weight: bold; color: black; font-size:19px; font-family:'Sans-serif', Calibri;cursor: default;"></div>
+
+        <div id="databoard">
+          <p style="color:transparent;;font-size:15px;padding-top:12px;font-family:'Calibri', Sans-serif;">Rotating velocity: <b id="rv">0.01</b><span style="padding-right:10px;">rpm</span>  Orbiting velocity: <span id="ov">16,000</span><span style="padding-right:10px;">mph</span> Field of View: <b id="fov">7.3</b><span style="padding-right:10px;">units</span>(<b id="fovim">10000</b>miles) <span id="sateLiteStatus" style="padding-left:9px;"></span></p>
+        </div>
+
+        
+        <div id="controls">  
+        
+          <div id="overlay">
+          <!-- <p id = "desc" style="color:white;font-size:10px;margin-top:6px;padding-left:25px;"><b style="color:#FFA500;font-size:70px; line-height:0px;">.</b>Jordan <b style="color:#ff0000;font-size:70px; line-height:0px;">.</b>Saudi arabia <b style="color:#800000;font-size:70px; line-height:0px;">.</b>Libya <b style="color:#FF69B4;font-size:70px; line-height:0px;">.</b>Algeria <b style="color:#000000;font-size:70px; line-height:0px;">.</b>Iran <b style="color:#01ff00;font-size:70px; line-height:0px;">.</b>Afghanistan <b style="color:#ff471a;font-size:70px; line-height:0px;">.</b>Tunisia</p> -->
+          </div>
+
+        </div>
+
+
+        <div id="ctr">
+        <!-- <button id="btn1">Zoom +</button>
+        <button id="btn2">Zoom -</button> -->
+        <button id="btn4">Simulations completed: <span id="arson">0</span></button>
+        <button id="btn5">Satellite Footprint:<br/> <span id="ftpt">4000</span> sqm</button>
+        <button id="btn5i">Kind of Orbit: inclined</button>
+        <button id="btn6">Altitude:300 miles</button>
+        <button id="btn7">Satellites deployed: 30</button>
+        <button id="btn8"><i class="fa-li fa fa-spinner fa-spin"></i>Start New Simulation</button>
+        <a href="#openModal" onclick="sent()" class="btn btn-success" style="top: 175px !important;left: 904px !important; position: absolute; z-index: 1000;width: 130px;height: 35px;" id="btn9"><i class="fa-li fa fa-spinner fa-spin"></i>End Simulation</a>
+        <button id="btn9i" onclick="clearStorage()"><i class="fa-li fa fa-spinner fa-spin"></i>Clear Storage</button>
+	<!-- <a  onclick="addSatelite()" class="btn btn-success" style="top: 235px !important;left: 904px !important; position: absolute; z-index: 1000;width: 150px;height: 35px;" ><i class="fa-li fa fa-spinner fa-spin"></i>Launch new satellite</a>	 -->
+        <a href="#openModal3" id="btn10" class="btn btn-success" info="Hover over the Data Board to show controls again"><i class="fa-li fa fa-spinner fa-spin" style="color:#ffffff"></i>Compute Monte-Carlo Data</a>
+        <div id="time">
+          <time><b>00:00:<span id="factor">00</span></b></time>
+        </div>
+
+        
+
+        <!-- <div id="note"><p style="font-size: 13px;">Orbital Period for 200 mile altitude: 91 mins</b></p></div>
+
+        <div id="note2"><p style="font-size: 12px;">Scale: 1 min 6 secs : to represents 91 mins</p></div>
+         -->
+        <a href="#openModal2" class="btn btn-success" style="top: 145px !important;left: 904px !important; position: absolute; z-index: 1000;width: 130px;height: 35px; visibility: hidden" id="btn19"><i class="fa-li fa fa-spinner fa-spin"></i></a>
+        </div>
+
+
+        <script>
+        var jatp = document.getElementById('altitude').value;
+        var time = document.getElementsByTagName('time')[0];
+        var seconds = 0, minutes = 0, hours = 0, t;
+
+        function add() {
+           seconds++;
+           if (seconds >= 60) {
+               seconds = 0;
+               minutes++;
+               if (minutes >= 60) {
+                   minutes = 0;
+                   hours++;
+                }
+            }
+        time.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+
+        timer();
+        }
+
+        function timer() {
+           t = setTimeout(add, 1000);
+        }
+        timer();
+        document.getElementById("btn8").addEventListener("click", function() {
+            location.reload();
+        });
+
+        function chg() {
+            if (seconds == 03) {
+                dot = new THREE.Points( dotGeometry, dotMaterial );
+            }
+        } 
+        console.log("This is the value of seconds " + seconds);
+        chg();
+        </script>
+
+
+
+        <script>
+          var saga = "";
+          var total_packets = "";
+          document.getElementById("btn9").addEventListener("click", function() {
+            stopflash();
+            document.getElementById("run_duration").innerHTML = time.textContent;
+          });
+          saga = document.getElementById("run_duration").innerHTML; 
+        </script>
+
+
+        
+
+
+
+
+
+      
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+  
+<div id="openModal" class="modalDialog">
+    
+    
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+    <style>
+
+.modalDialog {
+	position: fixed;
+	font-family: Arial, Helvetica, sans-serif;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.8);
+	z-index: 99999;
+	opacity:0;
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+	pointer-events: none;
+}
+.modalDialog:target {
+	opacity:1;
+	pointer-events: auto;
+}
+.modalDialog > div {
+	width: 60%;
+	position: relative;
+	margin: 10% auto;
+	padding: 5px 20px 13px 20px;
+	border-radius: 10px;
+	background: #fff;
+	background: -moz-linear-gradient(#fff, #efebeb);
+	background: -webkit-linear-gradient(#fff, #efebeb);
+	background: -o-linear-gradient(#fff, #efebeb);
+}
+.close {
+	background: #606061;
+	color: #FFFFFF;
+	line-height: 25px;
+	position: absolute;
+	right: -12px;
+	text-align: center;
+	top: -10px;
+	width: 24px;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	-moz-box-shadow: 1px 1px 3px #000;
+	-webkit-box-shadow: 1px 1px 3px #000;
+	box-shadow: 1px 1px 3px #000;
+}
+
+.close:hover { background: #00d9ff; }
+</style>
+	<div style="height:650px; margin-top: 10px !important; overflow-y: scroll">
+		
+        <h2>Data saved to database <span style='float:right;'><a onclick="" style="width: 6px;height:35px;font-size:12px;cursor:pointer">Print</a> <a id="closelog" style="width:6px;height:35px;font-size:12px;padding-left:13px;padding-right:14px" href="#close" >X Close</a> </span></h2>
+        <script>
+          document.getElementById("closelog").addEventListener("click", function() {
+            location.reload();
+        });
+        </script>
+        <br/>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+</style>
+
+
+<div id="ignoreContent2">
+                    
+</div>
+<div id="PDFcontent">
+<h5><center><b style='float:left;'>Altitude: <span id='log_alt'> 300</span> Miles</b><b style='float:right;'>Run Time:<span id='run_duration'>00:00:00</span></b></center></h5>
+ <br/>
+<table id="printable">
+  <tr>
+    <th>Packet No.</th>
+    <th>Destination</th>
+    <th>Transmission <br>Success (Delayed/Sent)</th>
+    <th>Duration <br>of Delay (Milliseconds)</th>
+  </tr>
+</table>
+
+</div>
+
+
+
+
+                  
+<script>
+
+// var saga = time.textContent; 
+
+// document.getElementById('run_duration').innerHTML= saga;
+
+// var pdfdoc = new jsPDF();
+
+var specialElementHandlers = {
+
+'#ignoreContent': function (element, renderer) {
+
+return true;
+
+}
+
+};
+
+$(document).ready(function(){
+
+$("#gpdf").click(function(){
+
+pdfdoc.fromHTML($('#PDFcontent').html(), 10, 10, {
+
+'width': 110,
+
+'elementHandlers': specialElementHandlers
+
+});
+
+pdfdoc.save('log.pdf');
+
+});});
+</script>
+
+
+
+	</div>
+</div>
+
+
+
+<div id="openModal3" class="modalDialog">
+    
+  <style>
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 10px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+  </style>
+      <style>
+  
+  .modalDialog {
+    position: fixed;
+    font-family: Arial, Helvetica, sans-serif;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 99999;
+    opacity:0;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    pointer-events: none;
+  }
+  .modalDialog:target {
+    opacity:1;
+    pointer-events: auto;
+  }
+  .modalDialog > div {
+    width: 60%;
+    position: relative;
+    margin: 10% auto;
+    padding: 5px 20px 13px 20px;
+    border-radius: 10px;
+    background: #fff;
+    background: -moz-linear-gradient(#fff, #efebeb);
+    background: -webkit-linear-gradient(#fff, #efebeb);
+    background: -o-linear-gradient(#fff, #efebeb);
+  }
+  .close {
+    background: #606061;
+    color: #FFFFFF;
+    line-height: 25px;
+    position: absolute;
+    right: -12px;
+    text-align: center;
+    top: -10px;
+    width: 24px;
+    text-decoration: none;
+    font-weight: bold;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+    -moz-box-shadow: 1px 1px 3px #000;
+    -webkit-box-shadow: 1px 1px 3px #000;
+    box-shadow: 1px 1px 3px #000;
+  }
+  
+  .close:hover { background: #00d9ff; }
+  </style>
+    <div style="height:650px; width:900px; margin-top: 10px !important; overflow-y: scroll">
+      
+          <h2>Monte-Carlo Results <span style='float:right;'><a onclick="" style="width: 6px;height:35px;font-size:12px;cursor:pointer">Print</a> <a id="closelog" style="width:6px;height:35px;font-size:12px;padding-left:13px;padding-right:14px" href="#close" >X Close</a> </span></h2>
+          <script>
+            document.getElementById("closelog").addEventListener("click", function() {
+              location.reload();
+          });
+          </script>
+          <br/>
+  <style>
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 10px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #00d9ff;
+    font-weight: bold; 
+  }
+
+  tr:nth-child(odd) {
+    background-color: #dddddd;
+    font-weight: bold; 
+  }
+  
+  </style>
+  
+  
+  <div id="ignoreContent3">
+                      
+  </div>
+    <div id="PDFcontent">
+      <h5><center><b style='float:left;margin-bottom: 12px;'>Simulations Completed: <span id="simps">0</span></b></center></h5vc >
+      <br/>
+      <table id="mont-table">
+        <tr>
+          <th style='width: 200px;'>Altitude:</th>
+          <th style='width: 50px;'>300 miles</th>
+          <th style='width: 50px;'>400 miles</th>
+          <th style='width: 50px;'>600 miles</th>
+          <th style='width: 50px;'>800 miles</th>
+          <th style='width: 50px;'>1000 miles</th>
+        </tr>
+      </table>
+    </div>
+
+<script>
+
+if (alt == "300") {
+  var zell = cell2;
+} else if (alt == "400") {
+  zell = cell3;
+} else if (alt == "600") {
+  zell = cell4;
+} else if (alt == "800") {
+  zell = cell5;
+} else if (alt == "1000") {
+  zell = cell6;
+}
+
+
+dell1.innerHTML = "Instant";
+dell2.innerHTML = sentpackets;
+
+// cell1.innerHTML = "Runtime";
+// cell2.innerHTML = time.textContent; 
+
+// cell1.innerHTML = "Delayed";
+// cell2.innerHTML = delayedpackets; 
+
+// cell1.innerHTML = "Ave. Delay Period";
+// cell2.innerHTML = time.textContent; 
+
+
+
+
+
+// var saga = time.textContent; 
+
+// document.getElementById('run_duration').innerHTML= saga;
+
+// var pdfdoc = new jsPDF();
+
+var specialElementHandlers = {
+
+'#ignoreContent': function (element, renderer) {
+
+return true;
+
+}
+
+};
+
+$(document).ready(function(){
+
+$("#gpdf").click(function(){
+
+pdfdoc.fromHTML($('#PDFcontent').html(), 10, 10, {
+
+'width': 110,
+
+'elementHandlers': specialElementHandlers
+
+});
+
+pdfdoc.save('log.pdf');
+
+});});
+</script>
+
+
+
+  </div>
+</div>  
+
+</body>
+
+
+</html>
+ 
